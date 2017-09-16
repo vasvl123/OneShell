@@ -123,7 +123,7 @@ Function Tokens(Keywords = Undefined) Export
 		Keywords = Keywords();
 	EndIf;
 
-	Tokens = Enum(Keywords,
+	Tokens = Enum(Keywords(),
 
 		// Literals
 
@@ -185,7 +185,7 @@ Function SelectorKinds() Export
 
 EndFunction // SelectorKinds()
 
-Function Enum(Знач Structure, Keys)
+Function Enum(Structure, Keys)
 	Var ItemList, Value;
 
 	For Each Items In StrSplit(Keys, ",", False) Do
@@ -238,31 +238,31 @@ Function Scan(Scanner) Export
 	If IsLetter(Char) Then
 		Lit = ScanIdentifier(Scanner);
 		Tok = Lookup(Lit);
-	ElseIf IsDigit(Char) Then
+	ИначеЕсли IsDigit(Char) Then
 		Lit = ScanNumber(Scanner);
 		Tok = Tokens.Number;
-	ElseIf Char = """" Or Char = "|" Then
+	ИначеЕсли Char = """" Or Char = "|" Then
 		Lit = ScanString(Scanner);
 		Tok = StringToken(Lit);
-	ElseIf Char = "'" Then
+	ИначеЕсли Char = "'" Then
 		Lit = ScanDateTime(Scanner);
 		Tok = Tokens.DateTime;
-	ElseIf Char = "=" Then
+	ИначеЕсли Char = "=" Then
 		Tok = Tokens.Eql;
 		NextChar(Scanner);
-	ElseIf Char = "<" Then
+	ИначеЕсли Char = "<" Then
 		If NextChar(Scanner) = "=" Then
 			Lit = "<=";
 			Tok = Tokens.Leq;
 			NextChar(Scanner);
-		ElseIf Scanner.Char = ">" Then
+		ИначеЕсли Scanner.Char = ">" Then
 			Lit = "<>";
 			Tok = Tokens.Neq;
 			NextChar(Scanner);
 		Else
 			Tok = Tokens.Lss;
 		EndIf;
-	ElseIf Char = ">" Then
+	ИначеЕсли Char = ">" Then
 		If NextChar(Scanner) = "=" Then
 			Lit = ">=";
 			Tok = Tokens.Geq;
@@ -270,7 +270,7 @@ Function Scan(Scanner) Export
 		Else
 			Tok = Tokens.Gtr;
 		EndIf;
-	ElseIf Char = "+" Then
+	ИначеЕсли Char = "+" Then
 		If NextChar(Scanner) = "=" Then
 			Lit = "+=";
 			Tok = Tokens.AddAssign;
@@ -278,55 +278,55 @@ Function Scan(Scanner) Export
 		Else
 			Tok = Tokens.Add;
 		EndIf;
-	ElseIf Char = "-" Then
+	ИначеЕсли Char = "-" Then
 		Tok = Tokens.Sub;
 		NextChar(Scanner);
-	ElseIf Char = "*" Then
+	ИначеЕсли Char = "*" Then
 		Tok = Tokens.Mul;
 		NextChar(Scanner);
-	ElseIf Char = "/" Then
+	ИначеЕсли Char = "/" Then
 		If NextChar(Scanner) = "/" Then
 			Lit = ScanComment(Scanner);
 			Tok = Tokens.Comment;
 		Else
 			Tok = Tokens.Div;
 		EndIf;
-	ElseIf Char = "%" Then
+	ИначеЕсли Char = "%" Then
 		Tok = Tokens.Mod;
 		NextChar(Scanner);
-	ElseIf Char = "(" Then
+	ИначеЕсли Char = "(" Then
 		Tok = Tokens.Lparen;
 		NextChar(Scanner);
-	ElseIf Char = ")" Then
+	ИначеЕсли Char = ")" Then
 		Tok = Tokens.Rparen;
 		NextChar(Scanner);
-	ElseIf Char = "[" Then
+	ИначеЕсли Char = "[" Then
 		Tok = Tokens.Lbrack;
 		NextChar(Scanner);
-	ElseIf Char = "]" Then
+	ИначеЕсли Char = "]" Then
 		Tok = Tokens.Rbrack;
 		NextChar(Scanner);
-	ElseIf Char = "?" Then
+	ИначеЕсли Char = "?" Then
 		Tok = Tokens.Ternary;
 		NextChar(Scanner);
-	ElseIf Char = "," Then
+	ИначеЕсли Char = "," Then
 		Tok = Tokens.Comma;
 		NextChar(Scanner);
-	ElseIf Char = "." Then
+	ИначеЕсли Char = "." Then
 		Tok = Tokens.Period;
 		NextChar(Scanner);
-	ElseIf Char = ":" Then
+	ИначеЕсли Char = ":" Then
 		Tok = Tokens.Colon;
 		NextChar(Scanner);
-	ElseIf Char = ";" Then
+	ИначеЕсли Char = ";" Then
 		Tok = Tokens.Semicolon;
 		NextChar(Scanner);
-	ElseIf Char = "" Then
+	ИначеЕсли Char = "" Then
 		Tok = Tokens.Eof;
-	ElseIf Char = "&" Then
+	ИначеЕсли Char = "&" Then
 		Lit = ScanComment(Scanner);
 		Tok = Tokens.Directive;
-	ElseIf Char = "#" Then
+	ИначеЕсли Char = "#" Then
 		Lit = ScanComment(Scanner);
 		Tok = Tokens.Preprocessor;
 	Else
@@ -743,7 +743,7 @@ Function ReturnStmt(ExprList)
 	Var ReturnStmt;
 
 	ReturnStmt = New Structure(
-		"NodeType," // string (type of this structure)
+		"NodeType" // string (type of this structure)
 	,
 	"ReturnStmt");
 
@@ -1032,7 +1032,7 @@ Function ParseUnaryExpr(Parser)
 	If UnaryOperations.Find(Parser.Tok) <> Undefined Then
 		Next(Parser);
 		Return UnaryExpr(Operator, ParseOperand(Parser));
-	ElseIf Parser.Tok = Tokens.Eof Then
+	ИначеЕсли Parser.Tok = Tokens.Eof Then
 		Return Undefined;
 	EndIf;
 	Return ParseOperand(Parser);
@@ -1053,16 +1053,16 @@ Function ParseOperand(Parser)
 			Operand = BasicLitExpr(Tok, Parser.Val);
 			Next(Parser);
 		EndIf;
-	ElseIf Tok = Tokens.Ident Then
+	ИначеЕсли Tok = Tokens.Ident Then
 		Operand = ParseDesignatorExpr(Parser);
-	ElseIf Tok = Tokens.Lparen Then
+	ИначеЕсли Tok = Tokens.Lparen Then
 		Next(Parser);
 		Operand = ParenExpr(ParseExpression(Parser));
 		Expect(Parser, Tokens.Rparen);
 		Next(Parser);
-	ElseIf Tok = Tokens.New Then
+	ИначеЕсли Tok = Tokens.New Then
 		Operand = ParseNewExpr(Parser);
-	ElseIf Tok = Tokens.Ternary Then
+	ИначеЕсли Tok = Tokens.Ternary Then
 		Operand = ParseTernaryExpr(Parser);
 	Else
 		Raise "Expected operand";
@@ -1160,7 +1160,7 @@ Function ParseSelector(Parser)
 		EndIf;
 		Value = Parser.Lit;
 		Return Selector("Ident", Value);
-	ElseIf Tok = Tokens.Lbrack Then
+	ИначеЕсли Tok = Tokens.Lbrack Then
 		Tok = Next(Parser);
 		If Tok = Tokens.Rbrack Then
 			Error(Parser.Scanner, "Expected expression",, True);
@@ -1168,7 +1168,7 @@ Function ParseSelector(Parser)
 		Value = ParseExprList(Parser);
 		Expect(Parser, Tokens.Rbrack);
 		Return Selector("Index", Value);
-	ElseIf Tok = Tokens.Lparen Then
+	ИначеЕсли Tok = Tokens.Lparen Then
 		Tok = Next(Parser);
 		If Tok = Tokens.Rparen Then
 			Value = EmptyArray;
@@ -1297,7 +1297,7 @@ Function ParseFuncDecl(Parser)
 	Name = Parser.Lit;
 	Next(Parser);
 	If Parser.Unknown.Property(Name, Object) Then
-		Object.Kind = ObjectKinds._Function;
+		Object.Kind = ObjectKinds.Function;
 		Object.Insert("Type", ParseSignature(Parser));
 		Parser.Unknown.Delete(Name);
 	Else
@@ -1461,27 +1461,27 @@ Function ParseStmt(Parser)
 	EndDo;
 	If Tok = Tokens.Ident Then
 		Return ParseAssignOrCallStmt(Parser);
-	ElseIf Tok = Tokens.If Then
+	ИначеЕсли Tok = Tokens.If Then
 		Return ParseIfStmt(Parser);
-	ElseIf Tok = Tokens.Try Then
+	ИначеЕсли Tok = Tokens.Try Then
 		Return ParseTryStmt(Parser);
-	ElseIf Tok = Tokens.While Then
+	ИначеЕсли Tok = Tokens.While Then
 		Return ParseWhileStmt(Parser);
-	ElseIf Tok = Tokens.For Then
+	ИначеЕсли Tok = Tokens.For Then
 		Return ParseForStmt(Parser);
-	ElseIf Tok = Tokens.Case Then
+	ИначеЕсли Tok = Tokens.Case Then
 		Return ParseCaseStmt(Parser);
-	ElseIf Tok = Tokens.Return Then
+	ИначеЕсли Tok = Tokens.Return Then
 		Return ParseReturnStmt(Parser);
-	ElseIf Tok = Tokens.Break Then
+	ИначеЕсли Tok = Tokens.Break Then
 		Next(Parser);
 		Return BreakStmt();
-	ElseIf Tok = Tokens.Continue Then
+	ИначеЕсли Tok = Tokens.Continue Then
 		Next(Parser);
 		Return ContinueStmt();
-	ElseIf Tok = Tokens.Raise Then
+	ИначеЕсли Tok = Tokens.Raise Then
 		Return ParseRaiseStmt(Parser);
-	ElseIf Tok = Tokens.Execute Then
+	ИначеЕсли Tok = Tokens.Execute Then
 		Return ParseExecuteStmt(Parser);
 	EndIf;
 	Return Undefined;
@@ -1522,7 +1522,7 @@ Function ParseAssignOrCallStmt(Parser)
 		Next(Parser);
 		Right = ParseExprList(Parser);
 		Return AssignStmt(Left, Right);
-	ElseIf Tok = Tokens.AddAssign Then
+	ИначеЕсли Tok = Tokens.AddAssign Then
 		Next(Parser);
 		Right = ParseExprList(Parser);
 		Return AddAssignStmt(Left, Right);
@@ -1627,7 +1627,7 @@ Function ParseForStmt(Parser)
 		Next(Parser);
 		Right = ParseExpression(Parser);
 		Collection = RangeExpr(Left, Right);
-	ElseIf Parser.Tok = Tokens.In Then
+	ИначеЕсли Parser.Tok = Tokens.In Then
 		Next(Parser);
 		Collection = ParseExpression(Parser);
 	EndIf;
@@ -1665,9 +1665,9 @@ Function ParseDecls(Parser)
 			If Parser.Tok = Tokens.Semicolon Then
 				Next(Parser);
 			EndIf;
-		ElseIf Tok = Tokens.Function Then
+		ИначеЕсли Tok = Tokens.Function Then
 			Decls.Add(ParseFuncDecl(Parser));
-		ElseIf Tok = Tokens.Procedure Then
+		ИначеЕсли Tok = Tokens.Procedure Then
 			Decls.Add(ParseProcDecl(Parser));
 		Else
 			Return Decls;
@@ -1695,13 +1695,13 @@ EndFunction // ParseModule()
 Function Value(Tok, Lit)
 	If Tok = Tokens.Number Then
 		Return Number(Lit);
-	ElseIf Tok = Tokens.DateTime Then
+	ИначеЕсли Tok = Tokens.DateTime Then
 		Return AsDate(Lit);
-	ElseIf Tok = Tokens.String Then
+	ИначеЕсли Tok = Tokens.String Then
 		Return Mid(Lit, 2, StrLen(Lit) - 2);
-	ElseIf Tok = Tokens.True Then
+	ИначеЕсли Tok = Tokens.True Then
 		Return True;
-	ElseIf Tok = Tokens.False Then
+	ИначеЕсли Tok = Tokens.False Then
 		Return False;
 	EndIf;
 	Return Undefined;
@@ -1830,7 +1830,7 @@ Procedure BSL_VisitDecl(Backend, Decl)
 		BSL_VisitVarListDecl(Backend, Decl.VarList);
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "FuncDecl" Or NodeType = "ProcDecl" Then
+	ИначеЕсли NodeType = "FuncDecl" Or NodeType = "ProcDecl" Then
 		Result.Add(Chars.ПС);
 		Backend.Indent = Backend.Indent + 1;
 		If NodeType = "FuncDecl" Then
@@ -1884,7 +1884,7 @@ Procedure BSL_VisitStmt(Backend, Stmt)
 		Result.Add(BSL_VisitExprList(Stmt.Right));
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "AddAssignStmt" Then
+	ИначеЕсли NodeType = "AddAssignStmt" Then
 		Result.Add(BSL_VisitDesignatorExpr(Stmt.Left[0]));
 		Result.Add(" = ");
 		Result.Add(BSL_VisitDesignatorExpr(Stmt.Left[0]));
@@ -1892,36 +1892,36 @@ Procedure BSL_VisitStmt(Backend, Stmt)
 		Result.Add(BSL_VisitExprList(Stmt.Right));
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ReturnStmt" Then
+	ИначеЕсли NodeType = "ReturnStmt" Then
 		Result.Add("Return ");
 		If Stmt.Property("ExprList") Then
 			Result.Add(BSL_VisitExprList(Stmt.ExprList));
 		EndIf;
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "BreakStmt" Then
+	ИначеЕсли NodeType = "BreakStmt" Then
 		Result.Add("Break;");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ContinueStmt" Then
+	ИначеЕсли NodeType = "ContinueStmt" Then
 		Result.Add("Continue;");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "RaiseStmt" Then
+	ИначеЕсли NodeType = "RaiseStmt" Then
 		Result.Add("Raise ");
 		If Stmt.Property("Expr") Then
 			Result.Add(BSL_VisitExpr(Stmt.Expr));
 		EndIf;
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ExecuteStmt" Then
+	ИначеЕсли NodeType = "ExecuteStmt" Then
 		Result.Add("Execute(");
 		Result.Add(BSL_VisitExpr(Stmt.Expr));
 		Result.Add(");");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "CallStmt" Then
+	ИначеЕсли NodeType = "CallStmt" Then
 		Result.Add(BSL_VisitDesignatorExpr(Stmt.DesignatorExpr[0]));
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "IfStmt" Then
+	ИначеЕсли NodeType = "IfStmt" Then
 		Result.Add("If ");
 		BSL_VisitIfStmt(Backend, Stmt);
 		If Stmt.Property("ElsePart") Then
@@ -1932,7 +1932,7 @@ Procedure BSL_VisitStmt(Backend, Stmt)
 		Result.Add("EndIf");
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "WhileStmt" Then
+	ИначеЕсли NodeType = "WhileStmt" Then
 		Result.Add("While ");
 		Result.Add(BSL_VisitExpr(Stmt.Condition));
 		Result.Add(" Do");
@@ -1941,7 +1941,7 @@ Procedure BSL_VisitStmt(Backend, Stmt)
 		Result.Add("EndDo");
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ForStmt" Then
+	ИначеЕсли NodeType = "ForStmt" Then
 		Result.Add("For ");
 		If Stmt.Collection.NodeType = "RangeExpr" Then
 			Result.Add(BSL_VisitDesignatorExpr(Stmt.DesignatorExpr));
@@ -1959,7 +1959,7 @@ Procedure BSL_VisitStmt(Backend, Stmt)
 		Result.Add("EndDo");
 		Result.Add(";");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "CaseStmt" Then
+	ИначеЕсли NodeType = "CaseStmt" Then
 		If Stmt.WhenPart.Count() > 0 Then
 			Result.Add("If ");
 			Result.Add(BSL_VisitDesignatorExpr(Stmt.DesignatorExpr));
@@ -1968,7 +1968,7 @@ Procedure BSL_VisitStmt(Backend, Stmt)
 			BSL_VisitIfStmt(Backend, IfStmt);
 			For Index = 1 To Stmt.WhenPart.Count() - 1 Do
 				IfStmt = Stmt.WhenPart[Index];
-				Result.Add("ElseIf ");
+				Result.Add("ИначеЕсли ");
 				Result.Add(BSL_VisitDesignatorExpr(Stmt.DesignatorExpr));
 				Result.Add(" = ");
 				BSL_VisitIfStmt(Backend, IfStmt);
@@ -1990,7 +1990,7 @@ Procedure BSL_VisitStmt(Backend, Stmt)
 			Backend.Indent = Backend.Indent + 1;
 			Result.Add(Chars.ПС);
 		EndIf;
-	ElseIf NodeType = "TryStmt" Then
+	ИначеЕсли NodeType = "TryStmt" Then
 		Result.Add("Try");
 		Result.Add(Chars.ПС);
 		BSL_VisitStatements(Backend, Stmt.TryPart);
@@ -2012,7 +2012,7 @@ Procedure BSL_VisitIfStmt(Backend, IfStmt)
 	BSL_VisitStatements(Backend, IfStmt.ThenPart);
 	If IfStmt.Property("ElsIfPart") Then
 		For Each Item In IfStmt.ElsIfPart Do
-			Result.Add("ElseIf ");
+			Result.Add("ИначеЕсли ");
 			BSL_VisitIfStmt(Backend, Item);
 		EndDo;
 	EndIf;
@@ -2040,34 +2040,34 @@ Function BSL_VisitExpr(Expr)
 		BasicLitKind = Expr.Kind;
 		If BasicLitKind = Tokens.String Then
 			Return StrTemplate("""%1""", StrReplace(Expr.Value, Chars.ПС, """ """));
-		ElseIf BasicLitKind = Tokens.Number Then
+		ИначеЕсли BasicLitKind = Tokens.Number Then
 			Return Format(Expr.Value, "NZ=0; NG=");
-		ElseIf BasicLitKind = Tokens.DateTime Then
+		ИначеЕсли BasicLitKind = Tokens.DateTime Then
 			Return Format(Expr.Value, "DF='""''yyyyMMdd'''");
-		ElseIf BasicLitKind = Tokens.True Or BasicLitKind = Tokens.False Then
+		ИначеЕсли BasicLitKind = Tokens.True Or BasicLitKind = Tokens.False Then
 			Return Format(Expr.Value, "BF=False; BT=True");
-		ElseIf BasicLitKind = Tokens.Undefined Then
+		ИначеЕсли BasicLitKind = Tokens.Undefined Then
 			Return "Undefined";
 		Else
 			Raise "Unknown basic literal";
 		EndIf;
-	ElseIf NodeType = "DesignatorExpr" Then
+	ИначеЕсли NodeType = "DesignatorExpr" Then
 		Return BSL_VisitDesignatorExpr(Expr);
-	ElseIf NodeType = "UnaryExpr" Then
+	ИначеЕсли NodeType = "UnaryExpr" Then
 		Return StrTemplate("%1 %2", Operators[Expr.Operator], BSL_VisitExpr(Expr.Operand));
-	ElseIf NodeType = "BinaryExpr" Then
+	ИначеЕсли NodeType = "BinaryExpr" Then
 		Return StrTemplate("%1 %2 %3", BSL_VisitExpr(Expr.Left), Operators[Expr.Operator], BSL_VisitExpr(Expr.Right));
-	ElseIf NodeType = "RangeExpr" Then
+	ИначеЕсли NodeType = "RangeExpr" Then
 		Return StrTemplate("%1 To %2", BSL_VisitExpr(Expr.Left), BSL_VisitExpr(Expr.Right));
-	ElseIf NodeType = "NewExpr" Then
+	ИначеЕсли NodeType = "NewExpr" Then
 		If TypeOf(Expr.Constructor) = Type("Structure") Then
 			Return StrTemplate("New %1", BSL_VisitExpr(Expr.Constructor));
 		Else
 			Return StrTemplate("New(%1)", BSL_VisitExprList(Expr.Constructor));
 		EndIf;
-	ElseIf NodeType = "TernaryExpr" Then
+	ИначеЕсли NodeType = "TernaryExpr" Then
 		Return StrTemplate("?(%1, %2, %3)", BSL_VisitExpr(Expr.Condition), BSL_VisitExpr(Expr.ThenPart), BSL_VisitExpr(Expr.ElsePart));
-	ElseIf NodeType = "ParenExpr" Then
+	ИначеЕсли NodeType = "ParenExpr" Then
 		Return StrTemplate("(%1)", BSL_VisitExpr(Expr.Expr));
 	EndIf;
 EndFunction // BSL_VisitExpr()
@@ -2081,11 +2081,11 @@ Function BSL_VisitDesignatorExpr(DesignatorExpr)
 			If Selector.Kind = "Ident" Then
 				Buffer.Add(".");
 				Buffer.Add(Selector.Value);
-			ElseIf Selector.Kind = "Index" Then
+			ИначеЕсли Selector.Kind = "Index" Then
 				Buffer.Add("[");
 				Buffer.Add(BSL_VisitExprList(Selector.Value));
 				Buffer.Add("]");
-			ElseIf Selector.Kind = "Call" Then
+			ИначеЕсли Selector.Kind = "Call" Then
 				Buffer.Add("(");
 				Buffer.Add(BSL_VisitExprList(Selector.Value));
 				Buffer.Add(")");
@@ -2129,7 +2129,7 @@ Procedure PS_VisitDecl(Backend, Decl)
 	NodeType = Decl.NodeType;
 	If NodeType = "VarListDecl" Then
 		PS_VisitVarListDecl(Backend, Decl.VarList);
-	ElseIf NodeType = "FuncDecl" Or NodeType = "ProcDecl" Then
+	ИначеЕсли NodeType = "FuncDecl" Or NodeType = "ProcDecl" Then
 		Result.Add(Chars.ПС);
 		Backend.Indent = Backend.Indent + 1;
 		Result.Add("function ");
@@ -2190,38 +2190,38 @@ Procedure PS_VisitStmt(Backend, Stmt)
 		Result.Add(" = ");
 		Result.Add(PS_VisitExprList(Stmt.Right, ", "));
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "AddAssignStmt" Then
+	ИначеЕсли NodeType = "AddAssignStmt" Then
 		Result.Add(PS_VisitDesignatorExpr(Stmt.Left[0], False));
 		Result.Add(" += ");
 		Result.Add(PS_VisitExprList(Stmt.Right, ", "));
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ReturnStmt" Then
+	ИначеЕсли NodeType = "ReturnStmt" Then
 		Result.Add("return ");
 		If Stmt.Property("ExprList") Then
 			Result.Add(PS_VisitExprList(Stmt.ExprList, ", "));
 		EndIf;
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "BreakStmt" Then
+	ИначеЕсли NodeType = "BreakStmt" Then
 		Result.Add("break");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ContinueStmt" Then
+	ИначеЕсли NodeType = "ContinueStmt" Then
 		Result.Add("continue");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "RaiseStmt" Then
+	ИначеЕсли NodeType = "RaiseStmt" Then
 		Result.Add("throw ");
 		If Stmt.Property("Expr") Then
 			Result.Add(PS_VisitExpr(Stmt.Expr));
 		EndIf;
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ExecuteStmt" Then
+	ИначеЕсли NodeType = "ExecuteStmt" Then
 		Result.Add("# Execute(");
 		Result.Add(PS_VisitExpr(Stmt.Expr));
 		Result.Add(")");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "CallStmt" Then
+	ИначеЕсли NodeType = "CallStmt" Then
 		Result.Add(PS_VisitDesignatorExpr(Stmt.DesignatorExpr[0], False));
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "IfStmt" Then
+	ИначеЕсли NodeType = "IfStmt" Then
 		Result.Add("if (");
 		PS_VisitIfStmt(Backend, Stmt);
 		If Stmt.Property("ElsePart") Then
@@ -2232,7 +2232,7 @@ Procedure PS_VisitStmt(Backend, Stmt)
 			Result.Add("}");
 			Result.Add(Chars.ПС);
 		EndIf;
-	ElseIf NodeType = "WhileStmt" Then
+	ИначеЕсли NodeType = "WhileStmt" Then
 		Result.Add("while (");
 		Result.Add(PS_VisitExpr(Stmt.Condition));
 		Result.Add(") {");
@@ -2240,7 +2240,7 @@ Procedure PS_VisitStmt(Backend, Stmt)
 		PS_VisitStatements(Backend, Stmt.Statements);
 		Result.Add("}");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "ForStmt" Then
+	ИначеЕсли NodeType = "ForStmt" Then
 		If Stmt.Collection.NodeType = "RangeExpr" Then
 			Result.Add("for (");
 			Result.Add(PS_VisitDesignatorExpr(Stmt.DesignatorExpr));
@@ -2263,7 +2263,7 @@ Procedure PS_VisitStmt(Backend, Stmt)
 		PS_VisitStatements(Backend, Stmt.Statements);
 		Result.Add("}");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "CaseStmt" Then
+	ИначеЕсли NodeType = "CaseStmt" Then
 		Result.Add("switch ");
 		Result.Add(PS_VisitDesignatorExpr(Stmt.DesignatorExpr));
 		Result.Add(" {");
@@ -2285,7 +2285,7 @@ Procedure PS_VisitStmt(Backend, Stmt)
 		Indent(Backend);
 		Result.Add("}");
 		Result.Add(Chars.ПС);
-	ElseIf NodeType = "TryStmt" Then
+	ИначеЕсли NodeType = "TryStmt" Then
 		Result.Add("try {");
 		Result.Add(Chars.ПС);
 		PS_VisitStatements(Backend, Stmt.TryPart);
@@ -2312,7 +2312,7 @@ Procedure PS_VisitIfStmt(Backend, IfStmt)
 	If IfStmt.Property("ElsIfPart") Then
 		For Each Item In IfStmt.ElsIfPart Do
 			Indent(Backend);
-			Result.Add("elseif (");
+			Result.Add("ИначеЕсли (");
 			PS_VisitIfStmt(Backend, Item);
 		EndDo;
 	EndIf;
@@ -2351,34 +2351,34 @@ Function PS_VisitExpr(Expr)
 		BasicLitKind = Expr.Kind;
 		If BasicLitKind = Tokens.String Then
 			Return StrTemplate("""%1""", StrReplace(Expr.Value, Chars.ПС, """ """));
-		ElseIf BasicLitKind = Tokens.Number Then
+		ИначеЕсли BasicLitKind = Tokens.Number Then
 			Return Format(Expr.Value, "NZ=0; NG=");
-		ElseIf BasicLitKind = Tokens.DateTime Then
+		ИначеЕсли BasicLitKind = Tokens.DateTime Then
 			Return Format(Expr.Value, "DF='""''yyyyMMdd'''");
-		ElseIf BasicLitKind = Tokens.True Or BasicLitKind = Tokens.False Then
+		ИначеЕсли BasicLitKind = Tokens.True Or BasicLitKind = Tokens.False Then
 			Return Format(Expr.Value, "BF=$False; BT=$True");
-		ElseIf BasicLitKind = Tokens.Undefined Then
+		ИначеЕсли BasicLitKind = Tokens.Undefined Then
 			Return "$null";
 		Else
 			Raise "Unknown basic literal";
 		EndIf;
-	ElseIf NodeType = "DesignatorExpr" Then
+	ИначеЕсли NodeType = "DesignatorExpr" Then
 		Return PS_VisitDesignatorExpr(Expr);
-	ElseIf NodeType = "UnaryExpr" Then
+	ИначеЕсли NodeType = "UnaryExpr" Then
 		Return StrTemplate("%1 %2", PS_Operators[Expr.Operator], PS_VisitExpr(Expr.Operand));
-	ElseIf NodeType = "BinaryExpr" Then
+	ИначеЕсли NodeType = "BinaryExpr" Then
 		Return StrTemplate("%1 %2 %3", PS_VisitExpr(Expr.Left), PS_Operators[Expr.Operator], PS_VisitExpr(Expr.Right));
-	ElseIf NodeType = "RangeExpr" Then
+	ИначеЕсли NodeType = "RangeExpr" Then
 		Return StrTemplate("%1..%2", PS_VisitExpr(Expr.Left), PS_VisitExpr(Expr.Right));
-	ElseIf NodeType = "NewExpr" Then
+	ИначеЕсли NodeType = "NewExpr" Then
 		If TypeOf(Expr.Constructor) = Type("Structure") Then
 			Return StrTemplate("<# New %1 #>", PS_VisitExpr(Expr.Constructor));
 		Else
 			Return StrTemplate("<# New(%1) #>", PS_VisitExprList(Expr.Constructor, ", "));
 		EndIf;
-	ElseIf NodeType = "TernaryExpr" Then
+	ИначеЕсли NodeType = "TernaryExpr" Then
 		Return StrTemplate("if (%1) { %2 } else { %3 }", PS_VisitExpr(Expr.Condition), PS_VisitExpr(Expr.ThenPart), PS_VisitExpr(Expr.ElsePart));
-	ElseIf NodeType = "ParenExpr" Then
+	ИначеЕсли NodeType = "ParenExpr" Then
 		Return StrTemplate("(%1)", BSL_VisitExpr(Expr.Expr));
 	EndIf;
 EndFunction // PS_VisitExpr()
@@ -2395,11 +2395,11 @@ Function PS_VisitDesignatorExpr(DesignatorExpr, IsOperand = True)
 			If Selector.Kind = "Ident" Then
 				Buffer.Add(".");
 				Buffer.Add(Selector.Value);
-			ElseIf Selector.Kind = "Index" Then
+			ИначеЕсли Selector.Kind = "Index" Then
 				Buffer.Add("[");
 				Buffer.Add(PS_VisitExprList(Selector.Value, ", "));
 				Buffer.Add("]");
-			ElseIf Selector.Kind = "Call" Then
+			ИначеЕсли Selector.Kind = "Call" Then
 				If Selector.Value.Count() > 0 Then
 					Buffer.Add(" ");
 					Buffer.Add(PS_VisitExprList(Selector.Value, " "));
@@ -2421,17 +2421,17 @@ EndFunction // PS_VisitDesignatorExpr()
 
 #EndRegion // Backends
 
-	Verbose = False;
+Verbose = False;
+
+Если АргументыКоманднойСтроки.Количество() Тогда
 
 	FormOutput = "BSL";
 	
 	Start = CurrentUniversalDateInMilliseconds();
 	
 	FormSource = Новый ТекстовыйДокумент;
-	FormSource.AddLine("if a = 2 then");
-	FormSource.AddLine("b = a * a;");
-	FormSource.AddLine("endif");
-
+	FormSource.Прочитать(АргументыКоманднойСтроки[0], TextEncoding.UTF8);
+	
 	Если FormOutput = "Lexems" Тогда
 		
 		Eof = Tokens().Eof;
@@ -2460,8 +2460,10 @@ EndFunction // PS_VisitDesignatorExpr()
 		Parser = Parser(FormSource.GetText());
 		ParseModule(Parser);
 		BSL_VisitModule(Backend, Parser.Module);
-		Сообщить(StrConcat(Backend.Result));
-		//FormResult.SetText(StrConcat(Backend.Result));
+
+		FormResult = Новый ТекстовыйДокумент;
+		FormResult.SetText(StrConcat(Backend.Result));
+		FormResult.Записать(АргументыКоманднойСтроки[1]);
 		
 	ИначеЕсли FormOutput = "PS" Тогда	
 		
@@ -2475,3 +2477,9 @@ EndFunction // PS_VisitDesignatorExpr()
 	КонецЕсли; 
 	
 	Message((CurrentUniversalDateInMilliseconds() - Start) / 1000);
+
+Иначе
+
+	Сообщить("укажите имя файла для обработки и имя файла результата");
+	
+КонецЕсли;
